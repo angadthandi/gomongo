@@ -1,0 +1,20 @@
+version: '3'
+services:
+        app:
+            image: golang:latest
+            container_name: gomongoapp
+            volumes:
+              - .:/go/src/github.com/angadthandi/gomongo
+            working_dir: /go/src/github.com/angadthandi/gomongo
+            command: bash -c "go get -v && go build && ./gomongo"
+            depends_on:
+                - mongodb
+            links:
+                - mongodb
+        mongodb:
+           image: mongo:4.1.3
+           container_name: gomongodb
+           volumes:
+             - .:/home/angadthandi/Documents/mongodbdata
+           ports:
+                   - "27017:27017"
