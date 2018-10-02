@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -12,14 +14,18 @@ type Person struct {
 	Phone string
 }
 
-func main() {
-	
-        p := Person {
-                "Angad",
-                "123456",
-        }
+func home(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Home Page! %s", r.URL.Path[1:])
+}
 
-        fmt.Println(p)
+func main() {
+
+	p := Person{
+		"Angad",
+		"123456",
+	}
+
+	fmt.Println(p)
 
 	session, err := mgo.Dial("gomongodb")
 	if err != nil {
@@ -38,4 +44,8 @@ func main() {
 	_ = c.Find(bson.M{"name": "Alex"}).One(&result)
 
 	fmt.Println("Phone:", result.Phone)
+
+	// start http web server
+	http.HandleFunc("/", home)
+	log.Fatal(http.ListenAndServe(":9001", nil))
 }

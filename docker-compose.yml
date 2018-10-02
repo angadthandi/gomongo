@@ -1,10 +1,13 @@
 version: '3'
 services:
         app:
-            image: golang:latest
+            build: .
+            image: golang:1.11
             container_name: gomongoapp
             volumes:
               - .:/go/src/github.com/angadthandi/gomongo
+            ports:
+              - "9001:9001"
             working_dir: /go/src/github.com/angadthandi/gomongo
             command: bash -c "go get -v && go build && ./gomongo"
             depends_on:
@@ -12,6 +15,7 @@ services:
             links:
                 - mongodb
         mongodb:
+           build: .
            image: mongo:4.0
            container_name: gomongodb
            volumes:
